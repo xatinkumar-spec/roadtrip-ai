@@ -1,0 +1,19 @@
+<div class="top-nav">
+    <div class="nav-left">
+        <a href="/" class="nav-btn">🏠 Home</a>
+        <a href="/trips/" class="nav-btn">📍 My Trips</a>
+        <a href="/trips/create/" class="nav-btn">➕ New Trip</a>
+    </div>
+
+    <div class="profile-menu">
+        <button class="profile-btn">
+            {{ user.username|first|upper }}
+        </button>
+
+        <div class="dropdown">
+            <a href="#">My Profile</a>
+            <a href="#">Settings</a>
+            <a href="/users/logout/">Logout</a>
+        </div>
+    </div>
+</div>

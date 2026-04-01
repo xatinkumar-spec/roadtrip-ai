@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Planning</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eef4ff, #f8fbff);
+            color: #1f2937;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 40px;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        .sub-text {
+            color: #64748b;
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .option-card {
+            text-decoration: none;
+            color: inherit;
+            background: white;
+            border-radius: 24px;
+            padding: 35px 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.10);
+            transition: 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .option-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.14);
+        }
+
+        .option-card h2 {
+            margin-top: 15px;
+            margin-bottom: 14px;
+            font-size: 30px;
+        }
+
+        .option-card p {
+            font-size: 17px;
+            line-height: 1.7;
+            color: #475569;
+        }
+
+        .ai-card {
+            background: linear-gradient(135deg, #f3e8ff, #eef2ff);
+        }
+
+        .manual-card {
+            background: linear-gradient(135deg, #e0f2fe, #ecfeff);
+        }
+
+        .emoji {
+            font-size: 58px;
+            display: block;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 35px;
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: bold;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Choose Your Planning Style</h1>
+        <p class="sub-text">Select how you want to create your trip plan</p>
+
+        <div class="option-grid">
+            <a href="{% url 'ai_chat' %}" class="option-card ai-card">
+                <span class="emoji">🤖</span>
+                <h2>AI Suggestions</h2>
+                <p>Talk with AI, choose places smartly, get recommendations, and build your trip with intelligent help.</p>
+            </a>
+
+            <a href="{% url 'create_trip' %}" class="option-card manual-card">
+                <span class="emoji">📝</span>
+                <h2>Own Planning</h2>
+                <p>Create your own trip manually by selecting destinations, dates, budget, and notes in your own way.</p>
+            </a>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>

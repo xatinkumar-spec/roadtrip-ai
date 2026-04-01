@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Route Map</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eef4ff, #f8fbff);
+            color: #1f2937;
+        }
+
+        .container {
+            width: 94%;
+            max-width: 1300px;
+            margin: 95px auto 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.10);
+            border: 1px solid #e2e8f0;
+        }
+
+        .header {
+            margin-bottom: 18px;
+        }
+
+        .header h1 {
+            margin: 0 0 8px;
+            color: #2563eb;
+            font-size: 34px;
+        }
+
+        .header p {
+            margin: 0;
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .map-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 22px;
+            margin-top: 20px;
+        }
+
+        #map {
+            width: 100%;
+            height: 600px;
+            border-radius: 22px;
+            overflow: hidden;
+            border: 1px solid #dbeafe;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
+        }
+
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .panel-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+        }
+
+        .panel-box h3 {
+            margin: 0 0 12px;
+            font-size: 20px;
+            color: #0f172a;
+        }
+
+        .trip-meta {
+            display: grid;
+            gap: 10px;
+        }
+
+        .meta-item {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 12px 14px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .meta-label {
+            display: block;
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .meta-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        .place-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 280px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .place-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: #f8fbff;
+            border: 1px solid #dbeafe;
+            border-radius: 14px;
+            padding: 12px;
+        }
+
+        .place-number {
+            min-width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .place-name {
+            font-size: 15px;
+            color: #1e293b;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .distance-box {
+            font-size: 18px;
+            font-weight: bold;
+            color: #166534;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .status-note {
+            margin-top: 10px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: #fff7ed;
+            border: 1px solid #fdba74;
+            color: #9a3412;
+            font-weight: bold;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 12px 18px;
+            border-radius: 14px;
+            font-weight: bold;
+            transition: 0.25s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #eef2ff;
+            color: #3730a3;
+            border: 1px solid #c7d2fe;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .custom-marker {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid white;
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+        }
+
+        .leaflet-popup-content-wrapper {
+            border-radius: 14px;
+        }
+
+        .leaflet-popup-content {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 992px) {
+            .map-layout {
+                grid-template-columns: 1fr;
+            }
+
+            #map {
+                height: 480px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                width: 96%;
+                margin-top: 85px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            #map {
+                height: 390px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'trips/navbar_trips.html' %}
+
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h1>🗺 Trip Route Map</h1>
+                <p>Clean travel view with route order, markers, and total distance.</p>
+            </div>
+
+            <div class="map-layout">
+                <div>
+                    <div id="map"></div>
+
+                    <div class="btn-row">
+                        <a href="{% url 'trip_detail' trip.id %}" class="btn btn-primary">⬅ Back to Trip</a>
+                        <a href="{% url 'trip_list' %}" class="btn btn-secondary">📋 All Trips</a>
+                    </div>
+                </div>
+
+                <div class="side-panel">
+                    <div class="panel-box">
+                        <h3>📌 Trip Summary</h3>
+                        <div class="trip-meta">
+                            <div class="meta-item">
+                                <span class="meta-label">Country</span>
+                                <span class="meta-value">{{ trip.country }}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Start Location</span>
+                                <span class="meta-value">{{ trip.start_location|default:"Not set" }}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Budget</span>
+                                <span class="meta-value">₹{{ trip.budget }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-box">
+                        <h3>📏 Total Distance</h3>
+                        <div id="totalDistance" class="distance-box">Calculating...</div>
+                        <div id="statusNote"></div>
+                    </div>
+
+                    <div class="panel-box">
+                        <h3>📍 Route Places</h3>
+                        <div class="place-list" id="placeList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    {{ places|json_script:"places-data" }}
+
+    <script>
+        const placesElement = document.getElementById("places-data");
+        let places = [];
+
+        if (placesElement) {
+            try {
+                places = JSON.parse(placesElement.textContent);
+            } catch (error) {
+                console.error("Places parse error:", error);
+            }
+        }
+
+        const map = L.map("map", { zoomControl: true }).setView([20.5937, 78.9629], 5);
+
+        L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+            attribution: "&copy; OpenStreetMap contributors &copy; CARTO"
+        }).addTo(map);
+
+        function createNumberedMarker(number) {
+            return L.divIcon({
+                className: "",
+                html: `<div class="custom-marker">${number}</div>`,
+                iconSize: [34, 34],
+                iconAnchor: [17, 17],
+                popupAnchor: [0, -16]
+            });
+        }
+
+        async function geocodePlace(place) {
+            const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(place)}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.length > 0) {
+                return {
+                    name: place,
+                    lat: parseFloat(data[0].lat),
+                    lon: parseFloat(data[0].lon),
+                    display_name: data[0].display_name
+                };
+            }
+
+            return null;
+        }
+
+        async function getRouteSegment(fromPoint, toPoint) {
+            const url = `https://router.project-osrm.org/route/v1/driving/${fromPoint.lon},${fromPoint.lat};${toPoint.lon},${toPoint.lat}?overview=full&geometries=geojson`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.routes && data.routes.length > 0) {
+                return data.routes[0];
+            }
+
+            throw new Error("Route not found");
+        }
+
+        function extractCountry(displayName) {
+            if (!displayName) return "";
+            const parts = displayName.split(",");
+            return parts[parts.length - 1].trim().toLowerCase();
+        }
+
+        async function loadRoute() {
+            const placeList = document.getElementById("placeList");
+            const totalDistanceEl = document.getElementById("totalDistance");
+            const statusNote = document.getElementById("statusNote");
+
+            if (!places || places.length < 2) {
+                totalDistanceEl.innerText = "At least 2 places required.";
+                return;
+            }
+
+            let coordinates = [];
+            placeList.innerHTML = "";
+
+            for (let i = 0; i < places.length; i++) {
+                const place = places[i];
+                const result = await geocodePlace(place);
+
+                if (result) {
+                    coordinates.push(result);
+
+                    L.marker([result.lat, result.lon], {
+                        icon: createNumberedMarker(i + 1)
+                    })
+                    .addTo(map)
+                    .bindPopup(`<strong>${i + 1}. ${result.name}</strong><br>${result.display_name}`);
+
+                    placeList.innerHTML += `
+                        <div class="place-item">
+                            <div class="place-number">${i + 1}</div>
+                            <div class="place-name">${result.name}</div>
+                        </div>
+                    `;
+                } else {
+                    placeList.innerHTML += `
+                        <div class="place-item">
+                            <div class="place-number">${i + 1}</div>
+                            <div class="place-name">Not found: ${place}</div>
+                        </div>
+                    `;
+                }
+            }
+
+            if (coordinates.length === 0) {
+                totalDistanceEl.innerText = "No valid places found.";
+                return;
+            }
+
+            const bounds = coordinates.map(p => [p.lat, p.lon]);
+            map.fitBounds(bounds, { padding: [40, 40] });
+
+            if (coordinates.length < 2) {
+                totalDistanceEl.innerText = "Need at least 2 valid locations.";
+                return;
+            }
+
+            let totalDistance = 0;
+            let allRouteCoords = [];
+            let skippedSegments = 0;
+
+            for (let i = 0; i < coordinates.length - 1; i++) {
+                const fromPoint = coordinates[i];
+                const toPoint = coordinates[i + 1];
+
+                const fromCountry = extractCountry(fromPoint.display_name);
+                const toCountry = extractCountry(toPoint.display_name);
+
+                try {
+                    if (fromCountry && toCountry && fromCountry !== toCountry) {
+                        skippedSegments++;
+                        continue;
+                    }
+
+                    const route = await getRouteSegment(fromPoint, toPoint);
+                    totalDistance += route.distance;
+
+                    const segmentCoords = route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+                    allRouteCoords.push(...segmentCoords);
+
+                } catch (error) {
+                    skippedSegments++;
+                }
+            }
+
+            if (allRouteCoords.length > 0) {
+                const polyline = L.polyline(allRouteCoords, {
+                    color: "#2563eb",
+                    weight: 6,
+                    opacity: 0.9
+                }).addTo(map);
+
+                map.fitBounds(polyline.getBounds(), { padding: [40, 40] });
+                totalDistanceEl.innerText = `${(totalDistance / 1000).toFixed(2)} km`;
+            } else {
+                totalDistanceEl.innerText = "No local road route available.";
+            }
+
+            if (skippedSegments > 0) {
+                statusNote.innerHTML = `
+                    <div class="status-note">
+                        Some route segments were skipped because road routing was not available between those places.
+                    </div>
+                `;
+            }
+        }
+
+        loadRoute();
+    </script>
+</body>
+</html>

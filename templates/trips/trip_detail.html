@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Details</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eef4ff, #f8fbff);
+            color: #1f2937;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 90px auto 30px;
+            background: white;
+            border-radius: 22px;
+            padding: 35px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.10);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            color: #111827;
+            font-size: 40px;
+        }
+
+        .sub-text {
+            color: #6b7280;
+            margin-bottom: 25px;
+            font-size: 18px;
+        }
+
+        .section {
+            margin-top: 28px;
+            padding: 22px;
+            border-radius: 18px;
+            background: #f9fbff;
+            border: 1px solid #e5edff;
+        }
+
+        .section h2 {
+            margin-top: 0;
+            color: #1d4ed8;
+            margin-bottom: 16px;
+        }
+
+        .trip-info p {
+            font-size: 18px;
+            margin: 12px 0;
+        }
+
+        .flag-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .flag-row img {
+            width: 32px;
+            height: 22px;
+            border-radius: 4px;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+
+        .destinations {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .destination-chip {
+            background: linear-gradient(135deg, #dbeafe, #e0f2fe);
+            color: #1e3a8a;
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .ai-section {
+            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+            border: 1px solid #c7d2fe;
+        }
+
+        .suggestion-list {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .suggestion-list li {
+            margin-bottom: 14px;
+            line-height: 1.6;
+            font-size: 17px;
+        }
+
+        .no-data {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .ai-plan-box {
+            background: #f8fbff;
+            border: 1px solid #dbeafe;
+            padding: 20px;
+            border-radius: 14px;
+            line-height: 1.8;
+            color: #1f2937;
+        }
+
+        .ai-plan-box h2 {
+            font-size: 28px;
+            color: #1d4ed8;
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .ai-plan-box h3 {
+            font-size: 22px;
+            color: #4338ca;
+            margin-top: 18px;
+            margin-bottom: 10px;
+        }
+
+        .ai-plan-box strong {
+            color: #111827;
+            font-weight: bold;
+        }
+
+        .ai-plan-box ul {
+            padding-left: 22px;
+            margin-top: 8px;
+            margin-bottom: 14px;
+        }
+
+        .ai-plan-box li {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .ai-plan-box p {
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: #334155;
+        }
+
+        .btn-group {
+            margin-top: 28px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 12px 18px;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            transition: 0.25s ease;
+            display: inline-block;
+        }
+
+        .btn-back {
+            background: #2563eb;
+        }
+
+        .btn-back:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .btn-edit {
+            background: #10b981;
+        }
+
+        .btn-edit:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: #ef4444;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 94%;
+                padding: 22px;
+                margin-top: 100px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            .sub-text {
+                font-size: 16px;
+            }
+
+            .trip-info p,
+            .suggestion-list li {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    {% include 'trips/navbar_trips.html' %}
+
+    <div class="container">
+        <h1>Trip Details</h1>
+        <p class="sub-text">Smart overview of your selected journey</p>
+
+        <div class="section trip-info">
+            <h2>Your Trip</h2>
+
+            <p class="flag-row">
+                <strong>Country:</strong>
+                <img src="https://flagcdn.com/w40/{{ trip.country_code }}.png" alt="Flag">
+                <span>{{ trip.country }}</span>
+            </p>
+
+            <p><strong>Start Date:</strong> {{ trip.start_date }}</p>
+            <p><strong>End Date:</strong> {{ trip.end_date }}</p>
+            <p><strong>Budget:</strong> ₹{{ trip.budget }}</p>
+            <p><strong>Notes:</strong> {{ trip.notes|default:"No notes added" }}</p>
+
+            <p><strong>Destinations:</strong></p>
+            <div class="destinations">
+                {% for destination in destination_list %}
+                    <span class="destination-chip">{{ destination }}</span>
+                {% empty %}
+                    <p class="no-data">No destinations added.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="section ai-section">
+            <h2>🤖 AI Travel Suggestions</h2>
+
+            {% if suggestions %}
+                <ul class="suggestion-list">
+                    {% for suggestion in suggestions %}
+                        <li>✔ {{ suggestion }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-data">No AI suggestions available.</p>
+            {% endif %}
+        </div>
+
+        {% if trip.ai_plan %}
+        <div class="section ai-plan">
+            <h2>🤖 AI Generated Plan</h2>
+            <div id="aiPlanBox" class="ai-plan-box"></div>
+        </div>
+        {% endif %}
+
+        <div class="btn-group">
+            <a href="{% url 'trip_list' %}" class="btn btn-back">⬅ Back</a>
+            <a href="{% url 'edit_trip' trip.id %}" class="btn btn-edit">✏ Edit</a>
+            <a href="{% url 'delete_trip' trip.id %}" class="btn btn-delete">🗑 Delete</a>
+            <a href="{% url 'map_view' trip.id %}" class="btn btn-back">🗺 View Route Map</a>
+        </div>
+    </div>
+
+    <script>
+        function formatAIPlan(text) {
+            let formatted = text;
+
+            formatted = formatted
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+
+            formatted = formatted.replace(/^### (.*)$/gm, '<h3>$1</h3>');
+            formatted = formatted.replace(/^## (.*)$/gm, '<h2>$1</h2>');
+            formatted = formatted.replace(/^# (.*)$/gm, '<h2>$1</h2>');
+            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/^\* (.*)$/gm, '<li>$1</li>');
+            formatted = formatted.replace(/^- (.*)$/gm, '<li>$1</li>');
+
+            formatted = formatted.replace(/(?:<li>.*?<\/li>\s*)+/gs, function(match) {
+                return '<ul>' + match + '</ul>';
+            });
+
+            formatted = formatted
+                .split(/\n\s*\n/)
+                .map(block => {
+                    if (
+                        block.startsWith('<h2>') ||
+                        block.startsWith('<h3>') ||
+                        block.startsWith('<ul>')
+                    ) {
+                        return block;
+                    }
+                    return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+                })
+                .join('');
+
+            return formatted;
+        }
+
+        const rawPlan = `{{ trip.ai_plan|default:''|escapejs }}`;
+        const planBox = document.getElementById("aiPlanBox");
+
+        if (planBox && rawPlan.trim() !== "") {
+            planBox.innerHTML = formatAIPlan(rawPlan);
+        }
+    </script>
+
+</body>
+</html>

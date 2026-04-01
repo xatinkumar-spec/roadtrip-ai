@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Trip</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fef2f2;
+            padding: 40px;
+        }
+
+        .box {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.10);
+        }
+
+        h2 {
+            color: #b91c1c;
+        }
+
+        .btn {
+            border: none;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #cbd5e1;
+            color: #111827;
+            text-decoration: none;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Delete Trip</h2>
+        <p>Are you sure you want to delete <strong>{{ trip.destination }}</strong>?</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn delete-btn">Yes, Delete</button>
+            <a href="/trips/" class="btn cancel-btn">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>

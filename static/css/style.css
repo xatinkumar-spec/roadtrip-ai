@@ -1,0 +1,79 @@
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+}
+
+.nav-left {
+    display: flex;
+    gap: 15px;
+}
+
+.nav-btn {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Profile */
+.profile-menu {
+    position: relative;
+    padding-bottom: 5px; /* 🔥 hover break fix */
+}
+
+.profile-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    color: #2563eb;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* 🔥 DROPDOWN FIX (NO GAP + SMOOTH) */
+..dropdown {
+    display: none;
+    position: absolute;
+
+    top: 100%;          /* button ke just niche */
+    margin-top: -6px;   /* gap remove */
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    overflow: hidden;
+    min-width: 180px;
+
+    opacity: 0;
+    transform: translateY(0);
+    transition: all 0.2s ease;
+}
+
+.profile-menu:hover .dropdown {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.dropdown a,
+.logout-btn {
+    display: block;
+    width: 100%;
+    padding: 12px 18px;
+    text-decoration: none;
+    color: black;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown a:hover,
+.logout-btn:hover {
+    background: #f3f4f6;
+}

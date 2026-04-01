@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - RoadTrip AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 0;
+        }
+
+        .box {
+            width: 380px;
+            margin: 60px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 25px;
+        }
+
+        form p {
+            margin-bottom: 14px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: all 0.25s ease;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .valid {
+            border-color: #16a34a !important;
+            background: #f0fdf4;
+        }
+
+        .invalid {
+            border-color: #dc2626 !important;
+            background: #fef2f2;
+        }
+
+        .rules {
+            margin-top: 12px;
+            margin-bottom: 10px;
+            padding-left: 20px;
+        }
+
+        .rules li {
+            margin-bottom: 8px;
+            color: #dc2626;
+            transition: all 0.25s ease;
+        }
+
+        .rules li.pass {
+            color: #16a34a;
+            transform: translateX(4px);
+        }
+
+        .message {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 6px;
+            min-height: 20px;
+            transition: all 0.25s ease;
+        }
+
+        .success-text {
+            color: #16a34a;
+        }
+
+        .error-text {
+            color: #dc2626;
+        }
+
+        .show-password {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0 18px 0;
+            font-size: 16px;
+            color: #222;
+        }
+
+        .show-password input {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+            transform: scale(1.02);
+        }
+
+        a {
+            text-decoration: none;
+            color: #2563eb;
+        }
+
+        .helptext,
+        ul.errorlist {
+            display: none;
+        }
+
+        p.bottom-text {
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Sign Up</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div style="color: red; background: #ffe6e6; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                {{ form.errors }}
+            </div>
+            {% endif %}
+
+            {{ form.username.label_tag }}
+            {{ form.username }}
+
+            {{ form.email.label_tag }}
+            {{ form.email }}
+
+            {{ form.password1.label_tag }}
+            {{ form.password1 }}
+
+            <ul class="rules" id="password-rules">
+                <li id="rule-length">At least 8 characters</li>
+                <li id="rule-number">Contains at least 1 number</li>
+                <li id="rule-letter">Contains at least 1 letter</li>
+                <li id="rule-special">Contains at least 1 special character</li>
+            </ul>
+
+            {{ form.password2.label_tag }}
+            {{ form.password2 }}
+
+            <label class="show-password">
+                <input type="checkbox" onclick="toggleSignupPasswords()">
+                Show Password
+            </label>
+
+            <div id="match-message" class="message"></div>
+
+            <button type="submit">Create Account</button>
+        </form>
+
+        <p class="bottom-text">Already have an account? <a href="/users/login/">Login</a></p>
+    </div>
+
+    <script>
+        const password1 = document.getElementById("id_password1");
+        const password2 = document.getElementById("id_password2");
+
+        const ruleLength = document.getElementById("rule-length");
+        const ruleNumber = document.getElementById("rule-number");
+        const ruleLetter = document.getElementById("rule-letter");
+        const ruleSpecial = document.getElementById("rule-special");
+        const matchMessage = document.getElementById("match-message");
+
+        function setRule(ruleElement, passed) {
+            if (passed) {
+                ruleElement.classList.add("pass");
+            } else {
+                ruleElement.classList.remove("pass");
+            }
+        }
+
+        function validatePassword() {
+            const value = password1.value;
+
+            const hasLength = value.length >= 8;
+            const hasNumber = /[0-9]/.test(value);
+            const hasLetter = /[A-Za-z]/.test(value);
+            const hasSpecial = /[^A-Za-z0-9]/.test(value);
+
+            setRule(ruleLength, hasLength);
+            setRule(ruleNumber, hasNumber);
+            setRule(ruleLetter, hasLetter);
+            setRule(ruleSpecial, hasSpecial);
+
+            const allValid = hasLength && hasNumber && hasLetter && hasSpecial;
+
+            password1.classList.remove("valid", "invalid");
+            if (value.length > 0) {
+                password1.classList.add(allValid ? "valid" : "invalid");
+            }
+
+            validateMatch();
+        }
+
+        function validateMatch() {
+            const pass1 = password1.value;
+            const pass2 = password2.value;
+
+            password2.classList.remove("valid", "invalid");
+            matchMessage.textContent = "";
+            matchMessage.classList.remove("success-text", "error-text");
+
+            if (pass2.length === 0) return;
+
+            if (pass1 === pass2) {
+                password2.classList.add("valid");
+                matchMessage.textContent = "Passwords match";
+                matchMessage.classList.add("success-text");
+            } else {
+                password2.classList.add("invalid");
+                matchMessage.textContent = "Passwords do not match";
+                matchMessage.classList.add("error-text");
+            }
+        }
+
+        function toggleSignupPasswords() {
+            if (password1.type === "password") {
+                password1.type = "text";
+                password2.type = "text";
+            } else {
+                password1.type = "password";
+                password2.type = "password";
+            }
+        }
+
+        if (password1) {
+            password1.addEventListener("input", validatePassword);
+        }
+
+        if (password2) {
+            password2.addEventListener("input", validateMatch);
+        }
+    </script>
+</body>
+</html>

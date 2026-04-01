@@ -1,0 +1,179 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Trip</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eff6ff, #f8fbff);
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.10);
+        }
+
+        h1 {
+            color: #1e3a8a;
+        }
+
+        label {
+            display: block;
+            margin: 14px 0 8px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            margin-top: 20px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .small-btn {
+            margin-top: 14px;
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .remove-btn {
+            margin-top: 10px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .destination-item {
+            margin-bottom: 10px;
+        }
+
+        .error-box {
+            color: #b91c1c;
+            background: #fee2e2;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Trip</h1>
+
+        {% if form.errors %}
+            <div class="error-box">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label for="id_country">Country</label>
+            {{ form.country }}
+
+            <div id="destinations-wrapper">
+                {% for destination in destination_list %}
+                    <div class="destination-item">
+                        <label>Destination {{ forloop.counter }}</label>
+                        <input type="text" name="destinations" class="form-control" value="{{ destination }}">
+                        {% if forloop.counter > 2 %}
+                            <button type="button" class="remove-btn" onclick="removeDestination(this)">Remove</button>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button type="button" class="small-btn" onclick="addDestination()">+ Add Destination</button>
+
+            <label for="id_start_date">Start Date</label>
+            {{ form.start_date }}
+
+            <label for="id_end_date">End Date</label>
+            {{ form.end_date }}
+
+            <label for="id_budget">Budget</label>
+            {{ form.budget }}
+
+            <label for="id_notes">Notes</label>
+            {{ form.notes }}
+
+            <button type="submit" class="btn">Update Trip</button>
+        </form>
+    </div>
+
+    <script>
+        function renumberDestinations() {
+            const items = document.querySelectorAll("#destinations-wrapper .destination-item");
+
+            items.forEach((item, index) => {
+                const number = index + 1;
+                item.querySelector("label").textContent = `Destination ${number}`;
+
+                let removeBtn = item.querySelector(".remove-btn");
+                if (number <= 2 && removeBtn) {
+                    removeBtn.remove();
+                }
+                if (number > 2 && !removeBtn) {
+                    removeBtn = document.createElement("button");
+                    removeBtn.type = "button";
+                    removeBtn.className = "remove-btn";
+                    removeBtn.innerText = "Remove";
+                    removeBtn.onclick = function () {
+                        removeDestination(removeBtn);
+                    };
+                    item.appendChild(removeBtn);
+                }
+            });
+        }
+
+        function addDestination() {
+            const wrapper = document.getElementById("destinations-wrapper");
+            const count = wrapper.querySelectorAll(".destination-item").length + 1;
+
+            const div = document.createElement("div");
+            div.className = "destination-item";
+
+            div.innerHTML = `
+                <label>Destination ${count}</label>
+                <input type="text" name="destinations" class="form-control" placeholder="Enter destination ${count}">
+                <button type="button" class="remove-btn" onclick="removeDestination(this)">Remove</button>
+            `;
+
+            wrapper.appendChild(div);
+            renumberDestinations();
+        }
+
+        function removeDestination(button) {
+            button.parentElement.remove();
+            renumberDestinations();
+        }
+    </script>
+</body>
+</html>

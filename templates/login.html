@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f2f2f2;
+            font-family: Arial, sans-serif;
+        }
+
+        .login-container {
+            width: 420px;
+            margin: 60px auto;
+            background: transparent;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 52px;
+            font-weight: 400;
+            margin-bottom: 30px;
+            color: #222;
+        }
+
+        label {
+            display: block;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #222;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            height: 68px;
+            padding: 0 20px;
+            font-size: 18px;
+            border: 1px solid #ddd;
+            background: #fff;
+            box-sizing: border-box;
+            margin-bottom: 28px;
+        }
+
+        .show-password {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: -10px;
+            margin-bottom: 28px;
+            font-size: 16px;
+            color: #222;
+        }
+
+        .show-password input {
+            width: 22px;
+            height: 22px;
+        }
+
+        button {
+            width: 100%;
+            height: 60px;
+            border: none;
+            background: #0d7692;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            margin-bottom: 35px;
+        }
+
+        button:hover {
+            background: #0b6980;
+        }
+
+        .links {
+            text-align: center;
+            font-size: 16px;
+            line-height: 1.9;
+        }
+
+        .links a {
+            color: #2d8db8;
+            text-decoration: none;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Login</h1>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if error_message %}
+                <div class="error-message">{{ error_message }}</div>
+            {% endif %}
+
+            <label for="id_username">Email / Username:</label>
+            <input type="text" name="username" id="id_username" placeholder="Enter email or username" required>
+
+            <label for="id_password">Password:</label>
+            <input type="password" name="password" id="id_password" placeholder="Enter password" required>
+
+            <label class="show-password">
+                <input type="checkbox" onclick="togglePassword()">
+                Show Password
+            </label>
+
+            <button type="submit">SIGN IN</button>
+        </form>
+
+        <div class="links">
+            <div><a href="/password-reset/">Forgot Username / Password?</a></div>
+            <div>Don't have an account? <a href="/users/signup/">Sign up</a></div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById("id_password");
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+            } else {
+                passwordField.type = "password";
+            }
+        }
+    </script>
+</body>
+</html>
